@@ -1,9 +1,14 @@
 ---
 
+- name: Check WordPress Downloaded
+  stat: path="{{ apache_root }}/{{ wp_directory_name }}/index.php"
+  register: wordpress_downloaded
+
 - name: Create WordPress directory
   file:
     path="{{ apache_root }}/{{ wp_directory_name }}"
     state=directory
+  when: wordpress_downloaded.stat.exists == False
 
 - name: Download WordPress
   command: wp core download
@@ -11,6 +16,7 @@
   sudo: yes
   args:
     chdir: "{{ apache_root }}/{{ wp_directory_name }}"
+  when: wordpress_downloaded.stat.exists == False
 
 - name: Configure WordPress
   command: wp core config 
@@ -20,6 +26,7 @@
     --dbpass="{{ wp_mysql_password }}" 
     --dbprefix="{{ wp_mysql_prefix }}"
     --allow-root
+  when: wordpress_downloaded.stat.exists == False
 
 - name: Install WordPress
   command: wp core install
@@ -30,3 +37,4 @@
     --admin_password="{{ wp_admin_password }}"
     --admin_email="{{ wp_admin_email }}"
     --allow-root
+  when: wordpress_downloaded.stat.exists == False
