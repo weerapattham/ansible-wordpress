@@ -1,0 +1,12 @@
+---
+
+- name: Install PHP
+  apt:
+    name="{{ item }}"
+    state=latest
+  with_items:
+  - php
+  - php-cli
+  - php-gd
+  - php-common
+  - php-mysql

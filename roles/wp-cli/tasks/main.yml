@@ -1,0 +1,14 @@
+---
+
+- name: Download WP-CLI
+  get_url:
+    url="{{ wp_cli_phar }}"
+    dest="{{ root_directory }}/{{ wp_cli_filename }}"
+
+- name: Make WP-CLI executable
+  file:
+    path: "{{ root_directory }}/{{ wp_cli_filename }}"
+    mode: u=rwx,g=rx,o=rx
+
+- name: Move WP-CLI file
+  command: mv "{{ root_directory }}/{{ wp_cli_filename }}" "{{ wp_cli_bin_path }}"

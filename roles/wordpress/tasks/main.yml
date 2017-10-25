@@ -1,0 +1,32 @@
+---
+
+- name: Create WordPress directory
+  file:
+    path="{{ apache_root }}/{{ wp_directory_name }}"
+    state=directory
+
+- name: Download WordPress
+  command: wp core download
+    --allow-root
+  sudo: yes
+  args:
+    chdir: "{{ apache_root }}/{{ wp_directory_name }}"
+
+- name: Configure WordPress
+  command: wp core config 
+    --path="{{ apache_root }}/{{ wp_directory_name }}"
+    --dbname="{{ wp_mysql_dbname }}"
+    --dbuser="{{ wp_mysql_user }}"
+    --dbpass="{{ wp_mysql_password }}" 
+    --dbprefix="{{ wp_mysql_prefix }}"
+    --allow-root
+
+- name: Install WordPress
+  command: wp core install
+    --path={{ apache_root }}/{{ wp_directory_name }}
+    --url="{{ wp_home_url }}"
+    --title="{{ wp_site_title }}"
+    --admin_user="{{ wp_admin_user }}"
+    --admin_password="{{ wp_admin_password }}"
+    --admin_email="{{ wp_admin_email }}"
+    --allow-root
